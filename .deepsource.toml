@@ -1,0 +1,16 @@
+version = 1
+
+[[analyzers]]
+name = "python"
+enabled = true
+
+[analyzers.settings]
+runtime_version = "3.x"
+
+[[code_formatters]]
+name = "black"
+enabled = true
+
+[[code_formatters]]
+name = "ruff"
+enabled = true
