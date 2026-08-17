@@ -78,8 +78,8 @@ if __name__=='__main__':
     if len(ls)>1:
       name=' '.join(ls[1:])
     else:
-      name='NULL-NAME'
-      print >>sys.stderr, 'WARNING: address "%s" contains no name. Will assinging "NULL-NAME".' % email
+      name=email
+      print >>sys.stderr, 'WARNING: address "%s" contains no name. Using the address as the display name.' % email
     try:
       c.mlist_add_user(email, name)
     except:

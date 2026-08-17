@@ -44,13 +44,13 @@ Basic usage:
 
   Examples of usage
   - set the totalMessageSize quota setting to 100MB:
-    %s file=myaccounts.txt host=192.168.102.24 port=7001 quotas:totalMessageSize=102400
+    %s file=myaccounts.txt host=<host> port=<port> quotas:totalMessageSize=102400
 
   - set the language to "de":
-    %s file=myaccounts.txt host=192.168.102.24 port=7001 webmaildata:language=de
+    %s file=myaccounts.txt host=<host> port=<port> webmaildata:language=de
 
-  - reset the password to "P@ssw0rd":
-    %s file=myaccounts.txt :passwd=P@ssw0rd
+  - reset the password:
+    %s file=myaccounts.txt :passwd=<password>
   """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])
 
   #defaults

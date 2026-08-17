@@ -75,14 +75,14 @@ Basic usage:
 
   Examples of usage
   - save all accounts from all domains:
-    %s file=myaccounts.txt host=192.168.102.24 port=7001
+    %s file=myaccounts.txt host=<host> port=<port>
 
   - save Creation Date, Mbox size and IMAP Last Login Date:
     %s file=myaccounts.txt registry=1 cd=1 ms=1 illd=1
 
-  - save accounts from example1.org and example2.org domains with first and
+  - save accounts from <domain1> and <domain2> domains with first and
     last names:
-    %s file=a1.txt domains=example1.org,example2.org names=1
+    %s file=a1.txt domains=<domain1>,<domain2> names=1
   """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])
 
   #defaults
