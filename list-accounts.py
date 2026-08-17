@@ -16,14 +16,14 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   def show_help():
-    print >>sys.stderr, """
+    print("""
 Basic usage:
   %s file=<accounts file> [host=<cli host>] \\
     [port=<cli port>] [debug=<debug level>] \\
@@ -83,7 +83,7 @@ Basic usage:
   - save accounts from <domain1> and <domain2> domains with first and
     last names:
     %s file=a1.txt domains=<domain1>,<domain2> names=1
-  """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])
+  """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0]), file=sys.stderr)
 
   #defaults
   acctFile=None
@@ -396,11 +396,11 @@ Basic usage:
   if cliPort==None:
     cliPort="7000"
   if not cliPort.isdigit():
-    print >>sys.stderr, "Port must be a number"
+    print("Port must be a number", file=sys.stderr)
     sys.exit(1)
   cliPort=int(cliPort)
   if not acctFile:
-    print >>sys.stderr, "Accounts file not specified"
+    print("Accounts file not specified", file=sys.stderr)
     show_help()
     sys.exit(1)
   fd=open(acctFile, 'w')
@@ -410,7 +410,7 @@ Basic usage:
     while not cliPass:
       cliPass=getpass.getpass('Enter CLI Admin password: ')
       if not cliPass:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   if cliDebug=="1":
     cli2.CLI.debug=1
   c.auth(cliPass, "admin")
@@ -543,5 +543,5 @@ Basic usage:
         myInfo=dict(c.get_show())
         infoStr='\t%s\t%s' % (myInfo['firstName'], myInfo['lastName'])
 
-      print >>fd, "%s@%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s" % (myAccount, myDomain, infoStr, myAliasStr, ac, at, cr, id, cd, md, plld, plli, illd, illi, wlld, wlli, alld, alli, olld, olli, lld, imc, cv, msv, ali, ald, cs, ms, msc, mfc, mss)
+      print("%s@%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s" % (myAccount, myDomain, infoStr, myAliasStr, ac, at, cr, id, cd, md, plld, plli, illd, illi, wlld, wlli, alld, alli, olld, olli, lld, imc, cv, msv, ali, ald, cs, ms, msc, mfc, mss), file=fd)
   fd.close()

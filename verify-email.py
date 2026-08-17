@@ -14,10 +14,10 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   # defaults
@@ -34,7 +34,7 @@ if __name__=='__main__':
     for p in PARAMS:
       sys.stderr.write('<%s> ' % p)
     sys.stderr.write('[admin-passwd [cli-host[:port]]]')
-    print >>sys.stderr
+    print(file=sys.stderr)
     sys.exit(255)
   for i in range(1, len(PARAMS)+1):
     PARAMSV[PARAMS[i-1]]=sys.argv[i]
@@ -46,10 +46,10 @@ if __name__=='__main__':
     try:
       CLIPORT=int(CLIHOST.split(':')[1])
     except ValueError:
-      print >>sys.stderr, 'Error: Non-numeric CLI port passed as parameter'
+      print('Error: Non-numeric CLI port passed as parameter', file=sys.stderr)
       sys.exit(1)
     CLIHOST=CLIHOST.split(':')[0]
-  if os.environ.has_key('CLIDEBUG'):
+  if 'CLIDEBUG' in os.environ:
     if len(os.environ['CLIDEBUG'])>0:
       cli2.CLI.debug=1
 
@@ -58,7 +58,7 @@ if __name__=='__main__':
     while not CLIPASS:
       CLIPASS=getpass.getpass('Enter CLI Admin password:')
       if not CLIPASS:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   c=cli2.CLI(CLIHOST, CLIPORT, CLIUSER, CLIPASS)
 
   myaccount=PARAMSV['address'].split('@')[0]
@@ -79,7 +79,7 @@ if __name__=='__main__':
     if domainContext:
       break
   if not domainContext:
-    print "NO[domain]"
+    print("NO[domain]")
     sys.exit(1)
   domFwds=c.get_forwarders()
   for fwd in domFwds:
@@ -87,7 +87,7 @@ if __name__=='__main__':
       accountContext='fwd:%s' % fwd
       break
   if accountContext:
-    print 'OK:', accountContext
+    print('OK:', accountContext)
     sys.exit(0)
   domAccounts=c.get_accounts()
   for acc in domAccounts:
@@ -103,7 +103,7 @@ if __name__=='__main__':
     if accountContext:
       break
   if not accountContext:
-    print 'NO'
+    print('NO')
     sys.exit(2)
-  print 'OK:', accountContext, domainContext
+  print('OK:', accountContext, domainContext)
 

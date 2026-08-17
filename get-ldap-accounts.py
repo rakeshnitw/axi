@@ -29,12 +29,12 @@ if __name__=='__main__':
     specialAccountsMask = [x.strip() for x in os.environ.get('LDAP_SPECIAL_ACCOUNTS_MASK').split(',') if x.strip()]
 
   def printEntry(entry):
-    print "# %s" % dn
+    print("# %s" % dn)
     for attr in entry:
       for k in range(len(entry[attr])):
-        print attr+':', repr(entry[attr][k])
-    print
-    print
+        print(attr+':', repr(entry[attr][k]))
+    print()
+    print()
 
   domain=''
   generatePasswords=False
@@ -61,34 +61,34 @@ if __name__=='__main__':
       elif arg.lower().startswith('excludemask='):
         specialAccountsMask=[x.strip() for x in arg[12:].split(',') if x.strip()]
       elif arg.lower() in ['-h', '/?', '--help']:
-        print "AXIGEN LDAP Query Helper"
-        print "Usage: %s [-h|--help|/?] [domain=<domain>] [-p] [host=<ldap host>] [binduser=<bind user>] [bindpass=<bind password>] [basedn=<base DN>] [filter=<search filter>] [attr=<account attribute>] [exclude=<comma-separated accounts>] [excludemask=<comma-separated regexes>]" % os.path.basename(sys.argv[0])
-        print "       -h | --help | /? -> print this help"
-        print "       -p               -> print a tab delimited password field"
-        print "                           (password is base64 encoded of a 16 character"
-        print "                           random string)"
-        print "       domain=<domain>  -> a @<domain> string will be appended to each"
-        print "                           printed user"
-        print "                           (useful for the import-accounts.py script)"
-        print "       host=<ldap host> -> LDAP server host or IP"
-        print "       binduser=<user>  -> LDAP bind user DN"
-        print "       bindpass=<pass>  -> LDAP bind password"
-        print "       basedn=<DN>      -> base DN for the search"
-        print "       filter=<filter>  -> LDAP search filter (default: (objectClass=user))"
-        print "       attr=<attr>      -> account attribute name (default: sAMAccountName)"
-        print "       exclude=<list>   -> comma-separated list of accounts to exclude"
-        print "       excludemask=<list> -> comma-separated list of regex masks to exclude"
-        print "     Environment variables LDAP_HOST, LDAP_BIND_USER, LDAP_BIND_PASS,"
-        print "     LDAP_BASE_DN, LDAP_SEARCH_FILTER, LDAP_ACCOUNT_ATTR,"
-        print "     LDAP_SPECIAL_ACCOUNTS and LDAP_SPECIAL_ACCOUNTS_MASK are also supported."
+        print("AXIGEN LDAP Query Helper")
+        print("Usage: %s [-h|--help|/?] [domain=<domain>] [-p] [host=<ldap host>] [binduser=<bind user>] [bindpass=<bind password>] [basedn=<base DN>] [filter=<search filter>] [attr=<account attribute>] [exclude=<comma-separated accounts>] [excludemask=<comma-separated regexes>]" % os.path.basename(sys.argv[0]))
+        print("       -h | --help | /? -> print this help")
+        print("       -p               -> print a tab delimited password field")
+        print("                           (password is base64 encoded of a 16 character")
+        print("                           random string)")
+        print("       domain=<domain>  -> a @<domain> string will be appended to each")
+        print("                           printed user")
+        print("                           (useful for the import-accounts.py script)")
+        print("       host=<ldap host> -> LDAP server host or IP")
+        print("       binduser=<user>  -> LDAP bind user DN")
+        print("       bindpass=<pass>  -> LDAP bind password")
+        print("       basedn=<DN>      -> base DN for the search")
+        print("       filter=<filter>  -> LDAP search filter (default: (objectClass=user))")
+        print("       attr=<attr>      -> account attribute name (default: sAMAccountName)")
+        print("       exclude=<list>   -> comma-separated list of accounts to exclude")
+        print("       excludemask=<list> -> comma-separated list of regex masks to exclude")
+        print("     Environment variables LDAP_HOST, LDAP_BIND_USER, LDAP_BIND_PASS,")
+        print("     LDAP_BASE_DN, LDAP_SEARCH_FILTER, LDAP_ACCOUNT_ATTR,")
+        print("     LDAP_SPECIAL_ACCOUNTS and LDAP_SPECIAL_ACCOUNTS_MASK are also supported.")
         sys.exit()
 
   if not ldapHost or not ldapBindUser or not ldapBindPass or not baseDN:
-    print >>sys.stderr, "ERROR: LDAP host, bind user, bind password and base DN are required."
-    print >>sys.stderr, "       Provide them as command-line arguments or environment variables."
+    print("ERROR: LDAP host, bind user, bind password and base DN are required.", file=sys.stderr)
+    print("       Provide them as command-line arguments or environment variables.", file=sys.stderr)
     sys.exit(1)
 
-  l=ldap.open(ldapHost)
+  l=ldap.initialize('ldap://%s' % ldapHost)
   l.simple_bind(ldapBindUser, ldapBindPass)
   searchScope = ldap.SCOPE_SUBTREE
   retrieveAttributes = None 
@@ -120,5 +120,5 @@ if __name__=='__main__':
       if generatePasswords:
         for k in range(16):
           p+=chr(random.randint(1,254))
-        p='\t'+base64.encodestring(p)[:-1]
-      print acctName+domain+p
+        p='\t'+base64.b64encode(p.encode('latin-1')).decode('ascii')
+      print(acctName+domain+p)

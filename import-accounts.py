@@ -16,10 +16,10 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
 # defaults
@@ -36,7 +36,7 @@ if __name__=='__main__':
     for p in PARAMS:
       sys.stderr.write('<%s> ' % p)
     sys.stderr.write('[admin-passwd [cli-host[:port]]]')
-    print >>sys.stderr
+    print(file=sys.stderr)
     sys.exit(255)
   for i in range(1, len(PARAMS)+1):
     PARAMSV[PARAMS[i-1]]=sys.argv[i]
@@ -48,7 +48,7 @@ if __name__=='__main__':
     try:
       CLIPORT=int(CLIHOST.split(':')[1])
     except ValueError:
-      print >>sys.stderr, 'Error: Non-numeric CLI port passed as parameter'
+      print('Error: Non-numeric CLI port passed as parameter', file=sys.stderr)
       sys.exit(1)
     CLIHOST=CLIHOST.split(':')[0]
   if not CLIPASS:
@@ -56,9 +56,9 @@ if __name__=='__main__':
     while not CLIPASS:
       CLIPASS=getpass.getpass('Enter CLI Admin password:')
       if not CLIPASS:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
 
-  if os.environ.has_key('CLIDEBUG'):
+  if 'CLIDEBUG' in os.environ:
     if len(os.environ['CLIDEBUG'])>0:
       cli2.CLI.debug=1
 
@@ -72,12 +72,12 @@ if __name__=='__main__':
       continue
     lpair=l.split("\t")
     if len(lpair)<2:
-      print >>sys.stderr, "!! No password field found. Please TAB-delimit the password field on the same line as the account address"
+      print("!! No password field found. Please TAB-delimit the password field on the same line as the account address", file=sys.stderr)
       continue
     laddr=lpair[0]
     lpass=lpair[1]
     if laddr.count('@')!=1:
-      print >>sys.stderr, '!! Invalid address format:', l
+      print('!! Invalid address format:', l, file=sys.stderr)
       continue
     accounts.append([laddr, lpass])
   c=cli2.CLI(CLIHOST, CLIPORT, CLIUSER, CLIPASS)
@@ -87,15 +87,15 @@ if __name__=='__main__':
     name=acct.split('@')[0].lower()
     dom=acct.split('@')[1].lower()
     if not c.hasDomain(dom):
-      print >>sys.stderr, '!! Domain does not exist for:', acct
+      print('!! Domain does not exist for:', acct, file=sys.stderr)
       continue
     if name in c.getAccountsList(dom):
-      print >>sys.stderr, '!! Account already exists:', acct
+      print('!! Account already exists:', acct, file=sys.stderr)
       continue
     try:
       c.addAccount(dom, name, passwd)
     except:
-      print >>sys.stderr, '!! Failed to add account:', acct
+      print('!! Failed to add account:', acct, file=sys.stderr)
       continue
-    print 'Account added:', acct
+    print('Account added:', acct)
 

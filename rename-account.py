@@ -15,10 +15,10 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   # defaults
@@ -32,7 +32,7 @@ if __name__=='__main__':
     if arg[:6].startswith('cli://'):
       args.remove(arg)
       if not '@' in arg[6:]:
-        print >>sys.stderr, "WARNING: Incorrect cli url specification. Using defaults"
+        print("WARNING: Incorrect cli url specification. Using defaults", file=sys.stderr)
         continue
       cliuserspec=arg[6:].split('@')[0]
       clihostspec=arg[6:].split('@')[1]
@@ -46,8 +46,8 @@ if __name__=='__main__':
         CLIPORT=clihostspec.split(':')[1]
 
   if len(args)!=3:
-    print >>sys.stderr, "Usage: %s [cliURI] <domain> <account> <new name>" % sys.argv[0]
-    print >>sys.stderr, "       cliURI - cli://[user[:password]]@host[:port]"
+    print("Usage: %s [cliURI] <domain> <account> <new name>" % sys.argv[0], file=sys.stderr)
+    print("       cliURI - cli://[user[:password]]@host[:port]", file=sys.stderr)
     sys.exit(1)
 
   domain=args[0]
@@ -59,17 +59,17 @@ if __name__=='__main__':
     while not CLIPASS:
       CLIPASS=getpass.getpass('Enter CLI Admin password:')
       if not CLIPASS:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   c=cli2.CLI(CLIHOST, CLIPORT, CLIUSER, CLIPASS)
   if not c.hasDomain(domain):
-    print >>sys.stderr, "ERROR: Domain '%s' does not exist in AXIGEN" % domain
+    print("ERROR: Domain '%s' does not exist in AXIGEN" % domain, file=sys.stderr)
     sys.exit(2)
   if not c.hasAccount(domain, account):
-    print >>sys.stderr, "ERROR: Account '%s' does not exist in domain '%s'" % (account, domain)
+    print("ERROR: Account '%s' does not exist in domain '%s'" % (account, domain), file=sys.stderr)
     sys.exit(3)
   try:
     c.setAccountData(account, domain, {'name': newname})
   except:
-    print >>sys.stderr, "ERROR: Could not rename '%s' as '%s'" % (account, newname)
+    print("ERROR: Could not rename '%s' as '%s'" % (account, newname), file=sys.stderr)
     sys.exit(4)
-  print "Successfully renamed '%s' as '%s'" % (account, newname)
+  print("Successfully renamed '%s' as '%s'" % (account, newname))

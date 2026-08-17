@@ -14,27 +14,27 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   def ilog(fd, message):
-    print >>sys.stdout, message
+    print(message, file=sys.stdout)
     if fd:
-      print >>fd, message
+      print(message, file=fd)
       fd.flush()
 
   def elog(fd, message):
-    print >>sys.stderr, message
+    print(message, file=sys.stderr)
     if fd:
-      print >>fd, message
+      print(message, file=fd)
       fd.flush()
 
   def show_help():
     global noDays, action, cliHost, cliPort
-    print >>sys.stderr, """
+    print("""
 Basic usage:
   %s [days=<no of days>] [action=list|delete] [domain=<domain>] [exclude=account1[[@domain1]:account2[[@domain2]:...]]]\\
     [host=<cli host>] [port=<cli port>] [pass=<admin password>] \\
@@ -51,7 +51,7 @@ Basic usage:
   pass    - if specified, will use this password, otherwise will ask for one
   debug   - if set to 1 will display all the protocol communication over CLI
 
-  """ % ((sys.argv[0]), noDays, action, cliHost, cliPort)
+  """ % ((sys.argv[0]), noDays, action, cliHost, cliPort), file=sys.stderr)
 
   #defaults
   noDays='100'
@@ -130,7 +130,7 @@ Basic usage:
     while not cliPass:
       cliPass=getpass.getpass('Enter CLI Admin password: ')
       if not cliPass:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   if cliDebug=="1":
     cli2.CLI.debug=1
   c.auth(cliPass, "admin")

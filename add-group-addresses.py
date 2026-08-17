@@ -15,14 +15,14 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   def show_help():
-    print >>sys.stderr, """
+    print("""
 Basic usage:
   %s file=<addresses file> group=<group name> \\
     [host=<cli host>] [port=<cli port>] [pass=<admin password>] \\
@@ -38,7 +38,7 @@ Basic usage:
   port  - CLI port to connect to; default: 7000
   pass  - if specified, will use this password, otherwise will ask for one
   debug - if set to 1 will display all the protocol communication over CLI
-  """ % (sys.argv[0])
+  """ % (sys.argv[0]), file=sys.stderr)
 
   #defaults
   addrFile=None
@@ -72,21 +72,21 @@ Basic usage:
   if cliPort==None:
     cliPort="7000"
   if not groupName:
-    print >>sys.stderr, "ERROR: Group not specified"
+    print("ERROR: Group not specified", file=sys.stderr)
     show_help()
     sys.exit(1)
   else:
     if len(groupName.split('@'))!=2:
-      print >>sys.stderr, "ERROR: Invalid group name. It must be of group@domain form."
+      print("ERROR: Invalid group name. It must be of group@domain form.", file=sys.stderr)
       sys.exit(1)
   if not cliPort.isdigit():
-    print >>sys.stderr, "Port must be a number"
+    print("Port must be a number", file=sys.stderr)
     sys.exit(1)
   cliPort=int(cliPort)
   try:
     fd=open(addrFile, 'r')
   except:
-    print >>sys.stderr, "Could not open addresses file (%s), or none specified" % addrFile
+    print("Could not open addresses file (%s), or none specified" % addrFile, file=sys.stderr)
     show_help()
     sys.exit(1)
   c=cli2.CLI(cliHost, cliPort)
@@ -95,7 +95,7 @@ Basic usage:
     while not cliPass:
       cliPass=getpass.getpass('Enter CLI Admin password: ')
       if not cliPass:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   if cliDebug=="1":
     cli2.CLI.debug=1
   c.auth(cliPass, "admin")
@@ -104,31 +104,31 @@ Basic usage:
   try:
     c.update_domain(domain)
   except:
-    print >>sys.stderr, "ERROR: Could not enter context for domain `%s`" % domain
+    print("ERROR: Could not enter context for domain `%s`" % domain, file=sys.stderr)
     sys.exit(2)
   if group not in c.get_forwarders():
-    print "Group `%s` does not exist in domain `%s`. Trying to create..." % (group, domain)
+    print("Group `%s` does not exist in domain `%s`. Trying to create..." % (group, domain))
     try:
       c.add_forwarder(group)
       c.commit()
-      print "Successfully created group `%s` in domain `%s`." % (group, domain)
+      print("Successfully created group `%s` in domain `%s`." % (group, domain))
     except:
-      print >>sys.stderr, "ERROR: Could not add group `%s` in domain `%s`." % (group, domain)
+      print("ERROR: Could not add group `%s` in domain `%s`." % (group, domain), file=sys.stderr)
       sys.exit(2)
   try:
     c.update_forwarder(group)
   except:
-    print >>sys.stderr, "ERROR: Could not enter context for group `%s`" % group
+    print("ERROR: Could not enter context for group `%s`" % group, file=sys.stderr)
     sys.exit(2)
   lineNo=0
   for line in fd:
     lineNo+=1
     addr=line.strip()
     if not addr:
-      print >>sys.stderr, "Empty line at %s:%d" % (addrFile, lineNo)
+      print("Empty line at %s:%d" % (addrFile, lineNo), file=sys.stderr)
       continue
     try:
       c.add_forwarder_address(addr)
-      print ">> Address `%s` successfully added" % addr
+      print(">> Address `%s` successfully added" % addr)
     except:
-      print >>sys.stderr, "ERROR: Address `%s` could not be added (%s:%d)" % (addr, addrFile, lineNo)
+      print("ERROR: Address `%s` could not be added (%s:%d)" % (addr, addrFile, lineNo), file=sys.stderr)

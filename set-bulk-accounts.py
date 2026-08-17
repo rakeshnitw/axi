@@ -16,14 +16,14 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   def show_help():
-    print >>sys.stderr, """
+    print("""
 Basic usage:
   %s file=<accounts file> [host=<cli host>] \\
     [port=<cli port>] [debug=<debug level>] \\
@@ -51,7 +51,7 @@ Basic usage:
 
   - reset the password:
     %s file=myaccounts.txt :passwd=<password>
-  """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0])
+  """ % (sys.argv[0], sys.argv[0], sys.argv[0], sys.argv[0]), file=sys.stderr)
 
   #defaults
   acctFile=None
@@ -78,11 +78,10 @@ Basic usage:
       cliDebug=param[6:]
       continue
     if ':' not in param or '=' not in param:
-      #print >>sys.stderr, "param: %s ignored" % param
       continue
     sets.append(param)
   if not len(sets):
-    print >>sys.stderr, "Nothig to set! Exiting..."
+    print("Nothing to set! Exiting...", file=sys.stderr)
     show_help()
     sys.exit(1)
   if cliHost==None:
@@ -90,13 +89,13 @@ Basic usage:
   if cliPort==None:
     cliPort="7000"
   if not cliPort.isdigit():
-    print >>sys.stderr, "Port must be a number"
+    print("Port must be a number", file=sys.stderr)
     sys.exit(1)
   cliPort=int(cliPort)
   try:
     fd=open(acctFile, 'r')
   except:
-    print >>sys.stderr, "Could not open accounts file (%s), or none specified" % acctFile
+    print("Could not open accounts file (%s), or none specified" % acctFile, file=sys.stderr)
     show_help()
     sys.exit(1)
   c=cli2.CLI(cliHost, cliPort)
@@ -105,7 +104,7 @@ Basic usage:
     while not cliPass:
       cliPass=getpass.getpass('Enter CLI Admin password: ')
       if not cliPass:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   sets.sort()
   if cliDebug=="1":
     cli2.CLI.debug=1
@@ -116,7 +115,7 @@ Basic usage:
     lineNo+=1
     acc_dom=line.strip().split('@')
     if len(acc_dom)!=2:
-      print >>sys.stderr, "Ignored line %d: %s" % (lineNo, line.strip())
+      print("Ignored line %d: %s" % (lineNo, line.strip()), file=sys.stderr)
       continue
     myAccount=acc_dom[0]
     myDomain=acc_dom[1]
@@ -140,7 +139,7 @@ Basic usage:
           c.config(myContext)
         prevContext=myContext
       c.set_data({mySetting: myValue})
-      print 'Ok: %s->%s->%s->%s: %s' % (myDomain, myAccount, myContext, mySetting, myValue)
+      print('Ok: %s->%s->%s->%s: %s' % (myDomain, myAccount, myContext, mySetting, myValue))
     if myContext!='':
       c.done()
     c.commit()

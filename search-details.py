@@ -17,14 +17,14 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   def show_help():
-    print >>sys.stderr, """
+    print("""
 Basic usage:
   %s pattern=<pattern-to-search-for> \\
     [host=<cli host>] [port=<cli port>] [pass=<admin password>] \\
@@ -36,7 +36,7 @@ Basic usage:
   port    - CLI port to connect to; default: 7000
   pass    - if specified, will use this password, otherwise will ask for one
   debug   - if set to 1 will display all the protocol communication over CLI
-  """ % (sys.argv[0])
+  """ % (sys.argv[0]), file=sys.stderr)
 
   #defaults
   pattern=None
@@ -62,7 +62,7 @@ Basic usage:
       cliDebug=param[6:]
       continue
   if not pattern:
-    print >>sys.stderr, "ERROR: Missing pattern"
+    print("ERROR: Missing pattern", file=sys.stderr)
     show_help()
     sys.exit(1)
   if cliHost==None:
@@ -70,7 +70,7 @@ Basic usage:
   if cliPort==None:
     cliPort="7000"
   if not cliPort.isdigit():
-    print >>sys.stderr, "Port must be a number"
+    print("Port must be a number", file=sys.stderr)
     sys.exit(1)
   cliPort=int(cliPort)
   c=cli2.CLI(cliHost, cliPort)
@@ -79,7 +79,7 @@ Basic usage:
     while not cliPass:
       cliPass=getpass.getpass('Enter CLI Admin password: ')
       if not cliPass:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   if cliDebug=="1":
     cli2.CLI.debug=1
   c.auth(cliPass, "admin")
@@ -88,14 +88,14 @@ Basic usage:
     try:
       c.update_domain(domain)
     except:
-      print >>sys.stderr, "ERROR: Could not enter context for domain `%s`" % domain
+      print("ERROR: Could not enter context for domain `%s`" % domain, file=sys.stderr)
       continue
     accounts=c.get_accounts()
     for account in accounts:
       try:
         c.update_account(account)
       except:
-        print >>sys.stderr, "ERROR: Could not enter account context for: `%s@%s`" % (account, domain)
+        print("ERROR: Could not enter account context for: `%s@%s`" % (account, domain), file=sys.stderr)
         continue
       cinfo=c.show_contactinfo()
       matches=[]
@@ -104,6 +104,6 @@ Basic usage:
           matches.append(line)
       if len(matches)>0:
         for match in matches:
-          print "%s@%s: %s" % (account, domain, match)
+          print("%s@%s: %s" % (account, domain, match))
       c.back()
     c.back()

@@ -15,10 +15,10 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   # defaults
@@ -32,7 +32,7 @@ if __name__=='__main__':
     if arg[:6].startswith('cli://'):
       args.remove(arg)
       if not '@' in arg[6:]:
-        print >>sys.stderr, "WARNING: Incorrect cli url specification. Using defaults"
+        print("WARNING: Incorrect cli url specification. Using defaults", file=sys.stderr)
         continue
       cliuserspec=arg[6:].split('@')[0]
       clihostspec=arg[6:].split('@')[1]
@@ -46,25 +46,25 @@ if __name__=='__main__':
         CLIPORT=clihostspec.split(':')[1]
 
   if len(args)<1:
-    print >>sys.stderr, "Usage: %s [cliURI] account1@domain1 [account2@domain2 [...]] " % sys.argv[0]
-    print >>sys.stderr, "       cliURI - cli://[user[:password]]@host[:port]"
+    print("Usage: %s [cliURI] account1@domain1 [account2@domain2 [...]] " % sys.argv[0], file=sys.stderr)
+    print("       cliURI - cli://[user[:password]]@host[:port]", file=sys.stderr)
     sys.exit(1)
   if not CLIPASS:
     import getpass
     while not CLIPASS:
       CLIPASS=getpass.getpass('Enter CLI Admin password:')
       if not CLIPASS:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   c=cli2.CLI(CLIHOST, int(CLIPORT), CLIUSER, CLIPASS)
   for email in args:
     if '@' not in email:
-      print >>sys.stderr, "Incorrect e-mail format: %s" % email
+      print("Incorrect e-mail format: %s" % email, file=sys.stderr)
       continue
     acc=email.split('@')[0]
     dom=email.split('@')[1]
     try:
       c.delAccount(dom, acc)
     except:
-      print >>sys.stderr, "FAILED:", email
+      print("FAILED:", email, file=sys.stderr)
       continue
-    print "OK:", email
+    print("OK:", email)

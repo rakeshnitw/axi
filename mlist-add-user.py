@@ -15,10 +15,10 @@ if __name__=='__main__':
   try:
     import cli2
   except ImportError:
-    print >>sys.stderr, 'ERROR: AXIGEN CLI Module could not be imported.'
-    print >>sys.stderr, 'Please place cli2.py in one of the following directories:'
+    print('ERROR: AXIGEN CLI Module could not be imported.', file=sys.stderr)
+    print('Please place cli2.py in one of the following directories:', file=sys.stderr)
     for x in sys.path:
-      print >>sys.stderr, '-',x
+      print('-',x, file=sys.stderr)
     sys.exit(1)
 
   # defaults
@@ -35,7 +35,7 @@ if __name__=='__main__':
     for p in PARAMS:
       sys.stderr.write('<%s> ' % p)
     sys.stderr.write('[admin-passwd [cli-host[:port]]]')
-    print >>sys.stderr
+    print(file=sys.stderr)
     sys.exit(255)
   for i in range(1, len(PARAMS)+1):
     PARAMSV[PARAMS[i-1]]=sys.argv[i]
@@ -47,10 +47,10 @@ if __name__=='__main__':
     try:
       CLIPORT=int(CLIHOST.split(':')[1])
     except ValueError:
-      print >>sys.stderr, 'Error: Non-numeric CLI port passed as parameter'
+      print('Error: Non-numeric CLI port passed as parameter', file=sys.stderr)
       sys.exit(1)
     CLIHOST=CLIHOST.split(':')[0]
-  if os.environ.has_key('CLIDEBUG'):
+  if 'CLIDEBUG' in os.environ:
     if len(os.environ['CLIDEBUG'])>0:
       cli2.CLI.debug=1
 
@@ -59,15 +59,15 @@ if __name__=='__main__':
     while not CLIPASS:
       CLIPASS=getpass.getpass('Enter CLI Admin password:')
       if not CLIPASS:
-        print >>sys.stderr, 'Empty passwords are not allowed!'
+        print('Empty passwords are not allowed!', file=sys.stderr)
   c=cli2.CLI(CLIHOST, CLIPORT, CLIUSER, CLIPASS)
   if not c.hasDomain(PARAMSV['domain']):
-    print >>sys.stderr, 'ERROR: Domain does not exist in AXIGEN'
+    print('ERROR: Domain does not exist in AXIGEN', file=sys.stderr)
     sys.exit(1)
   if not PARAMSV['account'] in c.getAccountsList(PARAMSV['domain']):
-    print >>sys.stderr, 'WARNING: Account %s does not exist in domain %s' % (PARAMSV['account'], PARAMSV['domain'])
+    print('WARNING: Account %s does not exist in domain %s' % (PARAMSV['account'], PARAMSV['domain']), file=sys.stderr)
   try:
     c.mListAddUser(PARAMSV['mail-list'], PARAMSV['domain'], PARAMSV['account']+'@'+PARAMSV['domain'], PARAMSV['full-name'])
   except:
-    print >>sys.stderr, 'ERROR: Failed to add user to mailing list'
+    print('ERROR: Failed to add user to mailing list', file=sys.stderr)
     sys.exit(2)
